@@ -117,25 +117,27 @@ std::shared_ptr<http_call> MockXboxSystemFactory::create_http_call(
     return m_mockHttpCall;
 }
 
-std::shared_ptr<http_call_internal> MockXboxSystemFactory::create_http_call(
+std::shared_ptr<http_call_internal> MockXboxSystemFactory::create_http_call_internal(
     _In_ const std::shared_ptr<xbox_live_context_settings>& xboxLiveContextSettings,
     _In_ const xsapi_internal_string& httpMethod,
     _In_ const xsapi_internal_string& serverName,
-    _In_ const web::uri& pathQueryFragment,
+    _In_ const xsapi_internal_string& pathQueryFragment,
     _In_ xbox_live_api xboxLiveApi
     ) 
 {
     std::lock_guard<std::mutex> lock(m_httpLock.get());
+
     if (m_setupMockForHttpClient)
     {
-        return xbox_system_factory::create_http_call(xboxLiveContextSettings, httpMethod, serverName, pathQueryFragment, xboxLiveApi);
+        return xbox_system_factory::create_http_call_internal(xboxLiveContextSettings, httpMethod, serverName, pathQueryFragment, xboxLiveApi);
     }
 
+    web::uri pathQueryFragmentCasa = web::uri(utils::string_t_from_internal_string(pathQueryFragment));
     if (m_httpStateResponses.size() > 0 || m_httpApiStateResponses.size() > 0)
     {
         m_mockHttpCall = std::make_shared<MockHttpCall>();
 
-        auto pathQuery = pathQueryFragment.to_string();
+        auto pathQuery = pathQueryFragmentCasa.to_string();
 
         auto httpStateResponses = m_httpApiStateResponses[xboxLiveApi];
         if (httpStateResponses == nullptr)
@@ -166,7 +168,7 @@ std::shared_ptr<http_call_internal> MockXboxSystemFactory::create_http_call(
     m_mockHttpCall->fRequestPostFuncInternal = nullptr;
     m_mockHttpCall->HttpMethod = utils::string_t_from_internal_string(httpMethod);
     m_mockHttpCall->ServerName = utils::string_t_from_internal_string(serverName);
-    m_mockHttpCall->PathQueryFragment = pathQueryFragment;
+    m_mockHttpCall->PathQueryFragment = pathQueryFragmentCasa;
     m_mockHttpCall->XboxLiveApi = xboxLiveApi;
 
     return m_mockHttpCall;
