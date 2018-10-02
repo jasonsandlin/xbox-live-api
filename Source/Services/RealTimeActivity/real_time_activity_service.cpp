@@ -640,7 +640,7 @@ real_time_activity_service::submit_subscriptions()
         request[1] = sequenceNumber;
         request[2] = web::json::value(subscription->resource_uri());
 
-        m_webSocketConnection->send(utils::internal_string_from_string_t(request.serialize()));
+        m_webSocketConnection->send(utils::internal_string_from_string_t(request.serialize()), nullptr);
     }
 }
 
@@ -677,7 +677,7 @@ real_time_activity_service::_Remove_subscription(
             request[1] = sequenceNumber;
             request[2] = subscriptionId;
 
-            m_webSocketConnection->send(utils::internal_string_from_string_t(request.serialize()));
+            m_webSocketConnection->send(utils::internal_string_from_string_t(request.serialize()), nullptr);
         }
     }
     else if(subscription->state() == real_time_activity_subscription_state::pending_subscribe)

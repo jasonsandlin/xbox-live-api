@@ -22,7 +22,7 @@ public:
 
     void send(
         _In_ const xsapi_internal_string& message,
-        _In_ xbox::services::xbox_live_callback<WebSocketCompletionResult> callback = nullptr
+        _In_ xbox::services::xbox_live_callback<WebSocketCompletionResult> callback
         );
 
     void close();

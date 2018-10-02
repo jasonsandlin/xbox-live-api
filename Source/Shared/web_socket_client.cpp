@@ -143,7 +143,7 @@ void xbox_web_socket_client::connect(
             xsapi_memory::mem_free(asyncBlock);
         };
 
-        HCWebSocketConnectAsync(asyncBlock, uri.data(), subProtocol.data(), pThis->m_websocket);
+        HCWebSocketConnectAsync(uri.data(), subProtocol.data(), pThis->m_websocket, asyncBlock);
     });
 }
 
@@ -153,6 +153,7 @@ void xbox_web_socket_client::send(
     )
 {
     AsyncBlock* asyncBlock = new (xsapi_memory::mem_alloc(sizeof(AsyncBlock))) AsyncBlock{};
+    asyncBlock->queue = get_xsapi_singleton()->m_asyncQueue;
     asyncBlock->context = utils::store_shared_ptr(xsapi_allocate_shared<xbox_live_callback<WebSocketCompletionResult>>(callback));
     asyncBlock->callback = [](_Inout_ AsyncBlock* asyncBlock)
     {
@@ -162,7 +163,7 @@ void xbox_web_socket_client::send(
         (*callback)(result);
         xsapi_memory::mem_free(asyncBlock);
     };
-    HCWebSocketSendMessageAsync(asyncBlock, m_websocket, message.data());
+    HCWebSocketSendMessageAsync(m_websocket, message.data(), asyncBlock);
 }
 
 void xbox_web_socket_client::close()

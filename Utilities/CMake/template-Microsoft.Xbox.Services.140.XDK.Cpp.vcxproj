@@ -55,7 +55,7 @@
       <Project>{e621c269-d177-4c1b-80ea-c0a274b7a151}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\External\libHttpClient\Build\libHttpClient.140.XDK.C\libHttpClient.140.XDK.C.vcxproj">
-      <Project>{cf37beb2-a66a-42ba-b348-1f07566f4865}</Project>
+      <Project>{D0A538D3-F4B6-4197-8E72-A02726B4DF50}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
